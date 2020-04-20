@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext, useRef, RefObject, memo, useEffect } from 'react';
+import React, { useState, useMemo, useContext, useRef, RefObject, memo, useEffect, useCallback } from 'react';
 import usePrevious from 'react-use/lib/usePrevious';
 import { DataLinkSuggestions } from './DataLinkSuggestions';
 import { ThemeContext, makeValue } from '../../index';
@@ -62,7 +62,7 @@ export const DataLinkInput: React.FC<DataLinkInputProps> = memo(
     // SelectionReference is used to position the variables suggestion relatively to current DOM selection
     const selectionRef = useMemo(() => new SelectionReference(), [setShowingSuggestions, linkUrl]);
 
-    const onKeyDown = React.useCallback((event: KeyboardEvent, next: () => any) => {
+    const onKeyDown = useCallback((event: React.KeyboardEvent, next: () => any) => {
       if (!stateRef.current.showingSuggestions) {
         if (event.key === '=' || event.key === '$' || (event.keyCode === 32 && event.ctrlKey)) {
           return setShowingSuggestions(true);
@@ -99,7 +99,7 @@ export const DataLinkInput: React.FC<DataLinkInputProps> = memo(
       }
     }, [linkUrl, prevLinkUrl]);
 
-    const onUrlChange = React.useCallback(({ value }: { value: Value }) => {
+    const onUrlChange = useCallback(({ value }: { value: Value }) => {
       setLinkUrl(value);
     }, []);
 
@@ -153,7 +153,7 @@ export const DataLinkInput: React.FC<DataLinkInputProps> = memo(
             placeholder={placeholder}
             value={stateRef.current.linkUrl}
             onChange={onUrlChange}
-            onKeyDown={(event, _editor, next) => onKeyDown(event as KeyboardEvent, next)}
+            onKeyDown={(event, _editor, next) => onKeyDown(event, next)}
             plugins={plugins}
             className={styles.editor}
           />
